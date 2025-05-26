@@ -29,14 +29,23 @@ def a_star(grid, start, goal):
                 current_node = current_node.parent
             return path[::-1]
         closed_set.add(current_node.position)
-        for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
-            new_row = current_node.position[0] + dr
-            new_col = current_node.position[1] + dc
-            new_pos = (new_row, new_col)
-            if (0 <= new_row < rows and 0 <= new_col < cols and
-                grid[new_row][new_col] == 0 and new_pos not in closed_set):
-                g_cost = current_node.g + 1
-                h_cost = heuristic(new_pos, goal)
-                new_node = Node(new_pos, current_node, g_cost, h_cost)
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            new_pos = (current_node.position[0] + dr, current_node.position[1] + dc)
+            if (0 <= new_pos[0] < rows and 0 <= new_pos[1] < cols and
+                grid[new_pos[0]][new_pos[1]] == 0 and new_pos not in closed_set):
+                new_node = Node(new_pos, current_node, current_node.g + 1, heuristic(new_pos, goal))
                 heapq.heappush(open_list, new_node)
     return None
+
+warehouse_grid = [
+    [0, 0, 0, 0, 1],
+    [1, 1, 0, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0]
+]
+
+start_position = (0, 0)
+goal_position = (4, 4)
+path = a_star(warehouse_grid, start_position, goal_position)
+print("Optimal Path:", path)
